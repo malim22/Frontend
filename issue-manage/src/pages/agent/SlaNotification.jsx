@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 // ✅ ADD THIS IMPORT
-import { fetchWithAuth } from "../../api";
-
+// ✅ ADD THIS
+import { getNotifications } from "../../api";
 const SlaNotification = () => {
   const [tickets, setTickets] = useState([
     {
@@ -43,9 +43,26 @@ const SlaNotification = () => {
   useEffect(() => {
     const loadSlaTickets = async () => {
       try {
-        const data = await fetchWithAuth("/sla");
-        if (data) {
-          setTickets(data);
+        const res = await getNotifications();
+        const data = res?.data || res;
+
+        if (Array.isArray(data)) {
+          setTickets(
+            data.map((n) => ({
+              id: n.ticketId || n.id,
+              priority:
+                n.priority === "P1"
+                  ? "Critical"
+                  : n.priority === "P2"
+                    ? "High"
+                    : n.priority === "P3"
+                      ? "Medium"
+                      : "Low",
+              title: n.message,
+              assignedTo: n.assignedTo || "Unassigned",
+              timeLeft: n.slaTime || "N/A",
+            }))
+          );
         }
       } catch (err) {
         console.log("SLA API error:", err);

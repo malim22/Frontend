@@ -129,7 +129,18 @@ export default function HomePage() {
                     A simple, structured system to manage complaints, tickets, and team workflows with SLA tracking and full transparency.
                 </p>
 
-                <button style={styles.mainBtn} onClick={() => navigate("/user")}>
+                <button
+                    style={styles.mainBtn}
+                    onClick={() => {
+                        const isLoggedIn = localStorage.getItem("auth");
+
+                        if (isLoggedIn) {
+                            navigate("/user");
+                        } else {
+                            navigate("/login", { state: { redirect: "/user" } });
+                        }
+                    }}
+                >
                     Start as User
                 </button>
             </section>
@@ -437,6 +448,6 @@ const styles = {
         color: "#94a3b8",
         borderTop: "1px solid #1e293b"
     },
-    
+
 
 };

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchWithAuth } from "../../api"; // ✅ IMPORT YOUR API
+import { useNavigate, useLocation } from "react-router-dom";
+import { fetchWithAuth } from "../../api"; // ✅ NOW USED PROPERLY
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -17,34 +18,40 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const validationError = validate();
-    if (validationError) {
-      alert(validationError);
+    const error = validate();
+    if (error) {
+      alert(error);
       return;
     }
 
     setLoading(true);
 
     try {
-      // ✅ REAL API CALL
-      const res = await fetchWithAuth("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password
-        })
-      });
+      // 🔥 REAL API CALL (YOUR BACKEND)
+     const res = await fetchWithAuth("/auth/login", {
+  method: "POST",
+  body: JSON.stringify({
+    email: form.email,
+    password: form.password
+  })
+});
 
-      // ✅ SAVE TOKEN (VERY IMPORTANT)
-      if (res.token) {
-        localStorage.setItem("token", res.token);
-      }
+// ✅ FORCE LOGIN EVEN WITHOUT BACKEND
+if (res.token) {
+  localStorage.setItem("token", res.token);
+  localStorage.setItem("role", res.role || "USER");
+}
 
-      // ✅ NAVIGATE AFTER LOGIN
-      navigate("/user");
+navigate("/user");
 
-    } catch {
-      alert("Backend not connected ❌");
+      // 🔁 REDIRECT LOGIC (FROM HOMEPAGE OR DEFAULT)
+      const redirect = location.state?.redirect || "/user";
+
+      navigate(redirect);
+
+    } catch (err) {
+      console.error(err);
+      alert("Login failed ❌ (Check backend API)");
     } finally {
       setLoading(false);
     }
@@ -90,7 +97,7 @@ export default function Login() {
   );
 }
 
-/* SAME STYLES */
+/* styles unchanged */
 const styles = {
   page: {
     height: "100vh",

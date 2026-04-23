@@ -49,14 +49,31 @@ export default function Tickets() {
     },
   ]);
 
-  // ✅ API STATE (NO ERROR — USED BELOW)
-  // const [apiData, setApiData] = useState(null);
-
- useEffect(() => {
+  useEffect(() => {
   getTicketQueue()
     .then((res) => {
-      if (res) {
-        setTickets(res); // ✅ USE API DATA
+      const data = res?.data || res;
+
+      if (Array.isArray(data)) {
+        setTickets(
+          data.map((t) => ({
+            id: t.id || t.ticketId,
+            title: t.title,
+            user: t.userName,
+            agent: t.assignedTo || "Unassigned",
+            category: t.categoryName,
+            priority:
+              t.priority === "P1"
+                ? "Urgent"
+                : t.priority === "P2"
+                ? "High"
+                : t.priority === "P3"
+                ? "Medium"
+                : "Low",
+            status: t.status,
+            sla: t.sla || "",
+          }))
+        );
       }
     })
     .catch((err) => console.error(err));

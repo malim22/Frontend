@@ -13,25 +13,25 @@ const SLASettings = () => {
   const [editData, setEditData] = useState(null);
 
   // ✅ LOAD SLA FROM BACKEND
-  /* ✅ LOAD SLA FROM BACKEND */
-  useEffect(() => {
-    const loadSLA = async () => {
-      try {
-        const data = await fetchWithAuth("/admin/sla"); // ✅ FIXED
+ useEffect(() => {
+  const loadSLA = async () => {
+    try {
+      // ✅ REAL API FROM YOUR TABLE
+      const data = await fetchWithAuth("/api/admin/sla");
 
-        if (Array.isArray(data)) {
-          setSlas(data);
-        } else if (Array.isArray(data?.data)) {
-          setSlas(data.data);
-        }
-
-      } catch (err) {
-        console.log("Using default SLA data", err);
+      if (Array.isArray(data)) {
+        setSlas(data);
+      } else if (Array.isArray(data?.data)) {
+        setSlas(data.data);
       }
-    };
 
-    loadSLA();
-  }, []);
+    } catch (err) {
+      console.log("Using default SLA data", err);
+    }
+  };
+
+  loadSLA();
+}, []);
 
   /* ---------------- EDIT ---------------- */
   const handleEdit = (sla) => {

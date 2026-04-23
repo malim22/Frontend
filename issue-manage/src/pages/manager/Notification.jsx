@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDashboardData } from "../../api"; // ✅ SAME AS ESCALATIONS
+import { getNotifications } from "../../api";
 
 export default function Notifications() {
   const [readAll, setReadAll] = useState(false);
@@ -39,23 +39,31 @@ export default function Notifications() {
   ]);
 
   // ✅ OPTIONAL API STATE (SAFE)
-  const [_apiData, setApiData] = useState(null);
-  // ✅ SAFE API CALL (WILL NOT BREAK UI)
-  useEffect(() => {
-    getDashboardData()
-      .then((res) => {
-        setApiData(res);
+const [_apiData] = useState(null);  // ✅ SAFE API CALL (WILL NOT BREAK UI)
+ useEffect(() => {
+  const fetchNotifications = async () => {
+    try {
+      const res = await getNotifications();
 
-        // ONLY UPDATE IF API HAS DATA
-        if (res && Array.isArray(res.notifications)) {
-          setNotifications(res.notifications);
-        }
-      })
-      .catch(() => {
-        // ❌ NO ERROR BREAK
-        // UI WILL CONTINUE USING DEFAULT DATA
-      });
-  }, []);
+      const data = res?.data || res;
+
+      if (Array.isArray(data)) {
+        setNotifications(
+          data.map((n) => ({
+            title: n.message,
+            desc: n.description,
+            time: new Date(n.createdAt).toLocaleString(),
+            unread: !n.read,
+          }))
+        );
+      }
+    } catch (err) {
+      console.error("Notifications API error:", err);
+    }
+  };
+
+  fetchNotifications();
+}, []);
 
   const unreadCount = notifications.filter(n => n.unread).length;
 

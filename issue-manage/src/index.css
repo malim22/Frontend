@@ -120,3 +120,13 @@ input, textarea {
 button, a {
   cursor: pointer !important;
 }
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

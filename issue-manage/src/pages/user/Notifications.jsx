@@ -8,45 +8,51 @@ export default function Notifications() {
 
   // ✅ FETCH FROM API
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const res = await getNotifications();
+  const fetchNotifications = async () => {
+    try {
+      const res = await getNotifications();
 
-        const formatted = res.map((n) => ({
-          id: n.ticketId || n.id,
-          message: n.message,
-          date: new Date(n.createdAt).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-          }),
-          category: n.categoryName,
-          status: n.status,
-          priority:
-            n.priority === "H"
-              ? "High"
-              : n.priority === "M"
-              ? "Medium"
-              : n.priority === "L"
-              ? "Low"
-              : "Critical",
-          desc: n.description,
-          assigned: n.assignedTo || "Support Team",
-          opened: new Date(n.createdAt).toLocaleDateString("en-GB"),
-          resolved: n.resolvedAt
-            ? new Date(n.resolvedAt).toLocaleDateString("en-GB")
-            : null,
-          comments: n.comments || [],
-          read: n.read || false,
-        }));
+      const data = res?.data || res; // ✅ handle real backend response
 
-        setNotifications(formatted);
-      } catch (err) {
-        console.error("Error fetching notifications:", err);
-      }
-    };
+      const formatted = data.map((n) => ({
+        id: n.ticketId || n.id,
+        message: n.message,
+        date: n.createdAt
+          ? new Date(n.createdAt).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+            })
+          : "",
+        category: n.categoryName,
+        status: n.status,
+        priority:
+          n.priority === "H"
+            ? "High"
+            : n.priority === "M"
+            ? "Medium"
+            : n.priority === "L"
+            ? "Low"
+            : "Critical",
+        desc: n.description,
+        assigned: n.assignedTo || "Support Team",
+        opened: n.createdAt
+          ? new Date(n.createdAt).toLocaleDateString("en-GB")
+          : "",
+        resolved: n.resolvedAt
+          ? new Date(n.resolvedAt).toLocaleDateString("en-GB")
+          : null,
+        comments: n.comments || [],
+        read: n.read || false,
+      }));
 
-    fetchNotifications();
-  }, []);
+      setNotifications(formatted);
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+    }
+  };
+
+  fetchNotifications();
+}, []);
 
   // Add comment (UNCHANGED)
   const handleAddComment = () => {

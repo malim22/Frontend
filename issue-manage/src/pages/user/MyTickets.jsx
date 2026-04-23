@@ -9,19 +9,22 @@ export default function MyTickets() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getMyTickets()
-      .then((data) => {
-        const formatted = (data || []).map((t) => [
-          t.ticketId || t.id,
-          t.title,
-          t.categoryName || "General",
-          t.status,
-          t.createdAt ? t.createdAt.slice(0, 10) : "Date",
-        ]);
-        setTickets(formatted);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  getMyTickets()
+    .then((res) => {
+      const data = res?.data?.content || res?.content || res || [];
+
+      const formatted = data.map((t) => [
+        t.id,
+        t.title,
+        t.categoryName || "General",
+        t.status,
+        t.createdAt ? t.createdAt.slice(0, 10) : "Date",
+      ]);
+
+      setTickets(formatted);
+    })
+    .catch((err) => console.error(err));
+}, []);
   
 
   const filtered = tickets.filter((t) => {

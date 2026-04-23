@@ -7,45 +7,54 @@ export default function NewTicket() {
   const [title, setTitle] = useState(""); // ✅ added
   const [description, setDescription] = useState(""); // ✅ added
 
-  const priorityLevels = ["L", "M", "H", "C"];
+  const mapPriority = (p) => {
+    const map = {
+      L: "P4",
+      M: "P3",
+      H: "P2",
+      C: "P1",
+    };
+    return map[p] || "P3";
+  };
 
   // ✅ API SUBMIT FUNCTION
   const handleSubmit = async (e) => {
     e.preventDefault();
     // ✅ ADD HERE
-  if (!priority) {
-    alert("Please select priority ⚠️");
-    return;
-  }
+    if (!priority) {
+      alert("Please select priority ⚠️");
+      return;
+    }
+
 
     try {
-  await createTicket({
-  title: title,
-  description: description,
-  category: category,   // ✅ FIXED
-  priority: priority
-});
+      await createTicket({
+        title: title,
+        description: description,
+        categoryId: Number(category), // ✅ must be number ID
+        priority: mapPriority(priority) // ✅ convert to P1/P2/P3/P4
+      });
 
-  alert("Ticket created successfully ✅");
+      alert("Ticket created successfully ✅");
 
-  // reset form
-  setTitle("");
-  setDescription("");
-  setCategory("");
-  setPriority("");
+      // reset form
+      setTitle("");
+      setDescription("");
+      setCategory("");
+      setPriority("");
 
-} catch (err) {
-  console.error("API ERROR:", err);
+    } catch (err) {
+      console.error("API ERROR:", err);
 
-  // 🔥 SMART ERROR HANDLING
-  if (err.message?.includes("Failed to fetch")) {
-    alert("Backend server is not running ⚠️");
-  } else if (err.message?.includes("404")) {
-    alert("API endpoint not found ⚠️");
-  } else {
-    alert("Backend is not ready yet 🚧");
-  }
-}
+      // 🔥 SMART ERROR HANDLING
+      if (err.message?.includes("Failed to fetch")) {
+        alert("Backend server is not running ⚠️");
+      } else if (err.message?.includes("404")) {
+        alert("API endpoint not found ⚠️");
+      } else {
+        alert("Backend is not ready yet 🚧");
+      }
+    }
   };
 
   return (
@@ -214,16 +223,16 @@ export default function NewTicket() {
           style={{ animationDelay: "0.25s" }}
         >
           <option value="">Select a category...</option>
-          <option>IT Support</option>
-          <option>HR</option>
-          <option>Facilities</option>
-          <option>Finance</option>
-          <option>Other</option>
+          <option value="1">IT Support</option>
+          <option value="2">HR</option>
+          <option value="3">Facilities</option>
+          <option value="4">Finance</option>
+          <option value="5">Other</option>
         </select>
 
         <label className="slide-left" style={{ animationDelay: "0.3s" }}>Priority *</label>
         <div className="priority-box">
-          {priorityLevels.map((p, i) => (
+          {["L", "M", "H", "C"].map((p, i) => (
             <button
               type="button"
               key={p}

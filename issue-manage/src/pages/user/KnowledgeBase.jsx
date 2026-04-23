@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getArticles } from "../../api";
+import { getCategories } from "../../api";
 
 export default function KnowledgeBase() {
   const [search, setSearch] = useState("");
@@ -11,17 +11,18 @@ export default function KnowledgeBase() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await getArticles();
+        const res = await getCategories();
 
-        const formatted = res.map((a) => ({
-          title: a.title,
-          desc: a.description,
-          category: a.categoryName,
-          date: new Date(a.updatedAt || a.createdAt).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-          }),
-        }));
+const data = res?.data || res; // ✅ handle real backend response
+
+const formatted = data
+  .filter((a) => a.active !== false)
+  .map((a) => ({
+    title: a.name,
+    desc: a.description || "No description",
+    category: a.name,
+    date: "",
+  }));
 
         setArticles(formatted);
       } catch (err) {

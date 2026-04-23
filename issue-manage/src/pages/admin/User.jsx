@@ -21,19 +21,20 @@ const User = ({ addLog }) => {
 
   // ✅ LOAD USERS FROM BACKEND (FIXED API ONLY)
   useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        const data = await fetchWithAuth("/users");
+  const loadUsers = async () => {
+    try {
+      // 🔥 REAL API FROM YOUR TABLE
+      const data = await fetchWithAuth("/api/admin/users");
 
-        setUsers(Array.isArray(data) ? data : data?.data || []);
-      } catch (err) {
-        console.log("Users API error:", err);
-      }
-    };
+      setUsers(Array.isArray(data) ? data : data?.data || []);
 
-    loadUsers();
-  }, []);
+    } catch (err) {
+      console.log("Users API error:", err);
+    }
+  };
 
+  loadUsers();
+}, []);
   /* ---------------- SAVE USER ---------------- */
   const handleSave = async (e) => {
     e.preventDefault();
@@ -43,7 +44,7 @@ const User = ({ addLog }) => {
     try {
       if (editingId !== null) {
         // ✅ UPDATE API
-        await fetchWithAuth(`/users/${editingId}`, {
+        await fetchWithAuth(`/api/admin/users/${editingId}`, {
           method: "PUT",
           body: JSON.stringify(form)
         });
@@ -56,7 +57,7 @@ const User = ({ addLog }) => {
 
       } else {
         // ✅ CREATE API
-        const res = await fetchWithAuth("/users", {
+        const res = await fetchWithAuth("/api/admin/users", {
           method: "POST",
           body: JSON.stringify(form)
         });
@@ -87,7 +88,7 @@ const User = ({ addLog }) => {
 
     try {
       // ✅ DELETE API
-      await fetchWithAuth(`/users/${id}`, {
+      await fetchWithAuth(`/api/admin/users/${id}`, {
         method: "DELETE"
       });
 
@@ -102,7 +103,7 @@ const User = ({ addLog }) => {
   /* ---------------- FILTER ---------------- */
   const filtered = users.filter((u) => {
     return (
-      u.name.toLowerCase().includes(search.toLowerCase()) &&
+      (u.name || "").toLowerCase().includes(search.toLowerCase()) &&
       (roleFilter ? u.role === roleFilter : true) &&
       (deptFilter ? u.dept === deptFilter : true)
     );

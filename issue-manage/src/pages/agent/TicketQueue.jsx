@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 // ✅ ADD THIS IMPORT
-import { fetchWithAuth } from "../../api";
+// ✅ ADD THIS
+import { getTicketQueue } from "../../api";
 
 const TicketQueue = () => {
   const [tickets, setTickets] = useState([
@@ -42,19 +43,39 @@ const TicketQueue = () => {
 
   // ✅ 🔥 API FETCH (ONLY ADDITION)
   useEffect(() => {
-    const loadQueue = async () => {
-      try {
-        const data = await fetchWithAuth("/tickets/queue");
-        if (data) {
-          setTickets(data);
-        }
-      } catch (err) {
-        console.log("Queue API error:", err);
-      }
-    };
+  const loadQueue = async () => {
+    try {
+      const res = await getTicketQueue();
+      const data = res?.data || res;
 
-    loadQueue();
-  }, []);
+      if (Array.isArray(data)) {
+        setTickets(
+          data.map((t) => ({
+            id: t.id,
+            priority:
+              t.priority === "P1"
+                ? "Critical"
+                : t.priority === "P2"
+                ? "High"
+                : t.priority === "P3"
+                ? "Medium"
+                : "Low",
+            title: t.title,
+            from: t.userName || "Unknown",
+            category: t.categoryName,
+            sla: t.slaHours || 0,
+            created: t.createdHours || 0,
+            status: t.status || "Unassigned",
+          }))
+        );
+      }
+    } catch (err) {
+      console.log("Queue API error:", err);
+    }
+  };
+
+  loadQueue();
+}, []);
 
   /* ✅ PICK TICKET (API READY) */
   const pickTicket = (id) => {

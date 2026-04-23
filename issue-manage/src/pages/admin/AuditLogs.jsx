@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchWithAuth } from "../../api";
-const AuditLogs = ({ auditLogs = [] }) => {
+import { getAuditLogs } from "../../api";const AuditLogs = ({ auditLogs = [] }) => {
 
   const [search, setSearch] = useState("");
   const [userFilter, setUserFilter] = useState("");
@@ -13,8 +12,8 @@ const AuditLogs = ({ auditLogs = [] }) => {
   useEffect(() => {
   const loadLogs = async () => {
     try {
-      const data = await fetchWithAuth("/admin/audit/user/0"); 
-      // 🔥 example endpoint (replace entityType + entityId properly)
+      const res = await getAuditLogs();
+      const data = res?.data || res;
 
       if (Array.isArray(data)) {
         setLogs(data);
@@ -25,7 +24,8 @@ const AuditLogs = ({ auditLogs = [] }) => {
   };
 
   loadLogs();
-}, []);
+}, []); 
+
   const filtered = logs.filter((l) => {
     return (
       l.user.toLowerCase().includes(search.toLowerCase()) &&

@@ -30,18 +30,22 @@ export default function Escalations() {
   // ✅ API STATE
   const [apiData, setApiData] = useState(null);
 
-  // ✅ API CALL (SAFE - WON’T BREAK ANYTHING)
   useEffect(() => {
-    getDashboardData()
-      .then((res) => {
-        setApiData(res);
-        if (res?.tickets) {
-          setTickets(res.tickets);
-        }
-      })
-      .catch(() => {});
-  }, []);
+  const fetchDashboard = async () => {
+    try {
+      const res = await getDashboardData();
 
+      // ✅ handle real backend response
+      const data = res?.data || res;
+
+      setApiData(data);
+    } catch (err) {
+      console.error("Dashboard API error:", err);
+    }
+  };
+
+  fetchDashboard();
+}, []);
   const agents = ["Mike Chen", "Sarah Johnson", "Alex Kim"];
 
   const [selectedTicket, setSelectedTicket] = useState(null);

@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react'; // ✅ ADDED
 import { fetchWithAuth } from "../../api";
+
 const Notifications = ({ auditLogs }) => {
 
   const [logs, setLogs] = useState(auditLogs || []); // ✅ API STATE
 
   // ✅ LOAD FROM BACKEND
-  /* ✅ LOAD FROM BACKEND */
-useEffect(() => {
-  const loadNotifications = async () => {
-    try {
-      // 🔥 REAL API FROM YOUR TABLE
-      const data = await fetchWithAuth("/admin/audit/ALL/ALL");
+  useEffect(() => {
+    const loadNotifications = async () => {
+      try {
+        // 🔥 REAL API FROM YOUR TABLE
+        const data = await fetchWithAuth("/api/notifications");
 
-      if (Array.isArray(data)) {
-        setLogs(data);
-      } else if (Array.isArray(data?.data)) {
-        setLogs(data.data);
-      } else {
-        setLogs([]);
+        if (Array.isArray(data)) {
+          setLogs(data);
+        } else if (Array.isArray(data?.data)) {
+          setLogs(data.data);
+        } else {
+          setLogs([]);
+        }
+
+      } catch (err) {
+        console.log("Notifications API error:", err);
+        setLogs(auditLogs || []);
       }
+    };
 
-    } catch (err) {
-      console.log("Audit API error:", err);
-      setLogs(auditLogs || []);
-    }
-  };
-
-  loadNotifications();
-}, [auditLogs]);
+    loadNotifications();
+  }, [auditLogs]);
 
   return (
     <div style={styles.container} className="fade-in">
+
       {/* Header */}
       <div style={styles.header}>
         <h2 style={styles.title}>System Notifications</h2>
@@ -45,57 +46,44 @@ useEffect(() => {
               key={log.id}
               style={{
                 ...styles.card,
-                borderLeft: `6px solid ${
-                  log.action === 'CREATE'
-                    ? '#10b981'
-                    : log.action === 'DELETE'
-                    ? '#ef4444'
-                    : '#3b82f6'
-                }`,
               }}
             >
               <div
                 style={{
                   ...styles.iconBox,
-                  background:
-                    log.action === 'CREATE'
-                      ? '#ecfdf5'
-                      : log.action === 'DELETE'
-                      ? '#fef2f2'
-                      : '#eff6ff',
                 }}
               >
-                {log.action === 'CREATE'
-                  ? '➕'
-                  : log.action === 'DELETE'
-                  ? '🗑️'
-                  : '📝'}
+                🔔
               </div>
 
               <div style={styles.details}>
                 <div style={styles.topRow}>
+
+                  {/* ❌ OLD: log.action → REMOVED */}
+                  {/* ❌ OLD LOGIC REMOVED COMPLETELY */}
+
                   <span
                     style={{
                       ...styles.actionTag,
-                      color:
-                        log.action === 'CREATE'
-                          ? '#10b981'
-                          : log.action === 'DELETE'
-                          ? '#ef4444'
-                          : '#3b82f6',
+                      color: '#3b82f6',
                     }}
                   >
-                    {log.action} ALERT
+                    NOTIFICATION
                   </span>
-                  <span style={styles.timeTxt}>{log.time}</span>
+
+                  {/* ❌ OLD: log.time → FIXED */}
+                  <span style={styles.timeTxt}>
+                    {new Date(log.createdAt).toLocaleString()}
+                  </span>
+
                 </div>
 
                 <p style={styles.message}>
-                  <strong>{log.user}</strong> performed a{' '}
-                  <strong>{log.action}</strong> action on{' '}
-                  <strong>{log.target}</strong> in the{' '}
-                  <strong>{log.module}</strong> module.
+                  {/* ❌ OLD FIELDS REMOVED */}
+                  {/* ✔ REAL FIELD FROM API */}
+                  {log.message}
                 </p>
+
               </div>
             </div>
           ))

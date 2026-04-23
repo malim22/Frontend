@@ -17,28 +17,21 @@ const Departments = () => {
   });
 
   /* ✅ LOAD FROM BACKEND */
-  /* ✅ LOAD FROM BACKEND */
   useEffect(() => {
-    const loadDepartments = async () => {
-      try {
-        const data = await fetchWithAuth("/admin/departments");
-        // if API returns raw array
-        if (Array.isArray(data)) {
-          setDepartments(data);
-        }
+  const loadDepartments = async () => {
+    try {
+      const res = await fetchWithAuth("/api/admin/departments");
 
-        // if API returns wrapped object like { data: [...] }
-        else if (Array.isArray(data?.data)) {
-          setDepartments(data.data);
-        }
+      // API may return array OR wrapped object
+      setDepartments(Array.isArray(res) ? res : res?.data || []);
 
-      } catch (err) {
-        console.error("Departments API error:", err);
-      }
-    };
+    } catch (err) {
+      console.error("Departments fetch error:", err);
+    }
+  };
 
-    loadDepartments();
-  }, []);
+  loadDepartments();
+}, []);
   /* ---------------- ADD DEPARTMENT ---------------- */
   const handleAddDept = async (e) => {
     e.preventDefault();

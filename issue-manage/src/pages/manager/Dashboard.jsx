@@ -5,14 +5,22 @@ export default function Dashboard() {
 
   const [apiData, setApiData] = useState(null); // ✅ ONLY ADD
 
-  // ✅ FETCH FROM BACKEND (SAFE)
   useEffect(() => {
-    getDashboardData()
-      .then((res) => {
-        setApiData(res);
-      })
-      .catch(() => {});
-  }, []);
+  const fetchDashboard = async () => {
+    try {
+      const res = await getDashboardData();
+
+      // ✅ handle real backend response (important)
+      const data = res?.data || res;
+
+      setApiData(data);
+    } catch (err) {
+      console.error("Dashboard API error:", err);
+    }
+  };
+
+  fetchDashboard();
+}, []);
 
   const categories = [
     { name: "Technical Issues", count: 18, width: 80 },

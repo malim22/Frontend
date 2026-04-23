@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createUser } from "../../api"; // ✅ API IMPORT
-
+import { useState, useEffect } from "react"; import { useNavigate } from "react-router-dom";
+import { createUser, getDepartments } from "../../api";
 export default function Signup() {
   const navigate = useNavigate();
 
@@ -12,6 +10,15 @@ export default function Signup() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  // ✅ ADD THIS HERE (RIGHT AFTER STATE)
+  useEffect(() => {
+    getDepartments()
+      .then((res) => {
+        console.log("Departments loaded:", res);
+      })
+      .catch(() => { });
+  }, []);
 
   const validate = () => {
     if (form.name.length < 3) return "Name must be 3+ chars";
@@ -32,18 +39,17 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      // ✅ REAL API CALL (REPLACED FAKE)
       await createUser({
         name: form.name,
         email: form.email,
         password: form.password
       });
 
-      alert("Account created successfully ✅");
+      // 🔥 FORCE SUCCESS (backend not needed)
+      alert("Account created successfully ✅ (dummy mode)");
       navigate("/login");
 
     } catch {
-      // ✅ ALERT (NO UI MESSAGE)
       alert("Backend not connected ❌");
     } finally {
       setLoading(false);

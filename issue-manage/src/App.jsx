@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Link, Outlet } from "react-router-dom";
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
 /* ================= HOMEPAGE ================= */
 import HomePage from "./pages/HomePage";
@@ -32,7 +33,7 @@ import ManagerNotification from "./pages/manager/Notification";
 import TeamWorkLoad from "./pages/manager/TeamWorkLoad";
 import ManagerTickets from "./pages/manager/Ticket";
 
-/* ================= SUPER ADMIN (YOUR FILES) ================= */
+/* ================= SUPER ADMIN ================= */
 import SuperAdminDashboard from "./pages/superadmin/SuperAdminDashboard";
 import AdminManagement from "./pages/superadmin/AdminManagement";
 import DepartmentManagement from "./pages/superadmin/DepartmentManagement";
@@ -41,188 +42,161 @@ import SuperNotifications from "./pages/superadmin/Notifications";
 import SystemControl from "./pages/superadmin/SystemControl";
 import UserOverview from "./pages/superadmin/UserOverview";
 
-// ================== LOGIN/REGISTER (EXTRA) ==================
+/* ================= AUTH ================= */
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 
 /* ================= LAYOUT ================= */
-function Layout({ globalSearch, setGlobalSearch }) {
+function Layout() {
+  const [open, setOpen] = useState(null);
+  const [hovered, setHovered] = useState(null);
+
+  const getStyle = (id) => ({
+    ...styles.subLink,
+    ...(hovered === id ? styles.subLinkHover : {})
+  });
+
   return (
     <div style={styles.app}>
+
+      {/* ================= SIDEBAR ================= */}
       <div style={styles.sidebar}>
         <h2 style={styles.logo}>⚡ ResolveGrid</h2>
 
         <Link to="/" style={styles.link}>🏠 Home</Link>
-        <Link to="/user" style={styles.link}>👤 User</Link>
-        <Link to="/agent" style={styles.link}>🧑‍💻 Agent</Link>
-        <Link to="/admin" style={styles.link}>🛠️ Admin</Link>
-        <Link to="/manager" style={styles.link}>📊 Manager</Link>
 
-        {/* ✅ ONLY ADDED */}
-        <Link to="/superadmin" style={styles.link}>👑 Super Admin</Link>
+        {/* USER */}
+        <div>
+          <div style={styles.menu} onClick={() => setOpen(open === "user" ? null : "user")}>
+            👤 User
+          </div>
 
-        <Link to="/user/notifications" style={styles.link}>🔔 Notifications</Link>
-      </div>
-
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <div style={styles.topBar}>
-          <input
-            value={globalSearch}
-            onChange={(e) => setGlobalSearch(e.target.value)}
-            placeholder="Search tickets, users, KB..."
-            style={styles.searchInput}
-          />
+          {open === "user" && (
+            <div style={styles.dropdown}>
+              <Link to="/user" style={getStyle("u1")} onMouseEnter={() => setHovered("u1")} onMouseLeave={() => setHovered(null)}>Dashboard</Link>
+              <Link to="/user/tickets" style={getStyle("u2")} onMouseEnter={() => setHovered("u2")} onMouseLeave={() => setHovered(null)}>Tickets</Link>
+              <Link to="/user/new" style={getStyle("u3")} onMouseEnter={() => setHovered("u3")} onMouseLeave={() => setHovered(null)}>New Ticket</Link>
+              <Link to="/user/kb" style={getStyle("u4")} onMouseEnter={() => setHovered("u4")} onMouseLeave={() => setHovered(null)}>KB</Link>
+              <Link to="/user/notifications" style={getStyle("u5")} onMouseEnter={() => setHovered("u5")} onMouseLeave={() => setHovered(null)}>Notifications</Link>
+            </div>
+          )}
         </div>
 
-        <div style={styles.content}>
-          <Outlet />
+        {/* AGENT */}
+        <div>
+          <div style={styles.menu} onClick={() => setOpen(open === "agent" ? null : "agent")}>
+            🧑‍💻 Agent
+          </div>
+
+          {open === "agent" && (
+            <div style={styles.dropdown}>
+              <Link to="/agent" style={getStyle("a1")} onMouseEnter={() => setHovered("a1")} onMouseLeave={() => setHovered(null)}>Dashboard</Link>
+              <Link to="/agent/queue" style={getStyle("a2")} onMouseEnter={() => setHovered("a2")} onMouseLeave={() => setHovered(null)}>Queue</Link>
+              <Link to="/agent/tickets" style={getStyle("a3")} onMouseEnter={() => setHovered("a3")} onMouseLeave={() => setHovered(null)}>My Tickets</Link>
+              <Link to="/agent/sla" style={getStyle("a4")} onMouseEnter={() => setHovered("a4")} onMouseLeave={() => setHovered(null)}>SLA</Link>
+            </div>
+          )}
         </div>
+
+        {/* ADMIN */}
+        <div>
+          <div style={styles.menu} onClick={() => setOpen(open === "admin" ? null : "admin")}>
+            🛠️ Admin
+          </div>
+
+          {open === "admin" && (
+            <div style={styles.dropdown}>
+              <Link to="/admin" style={getStyle("ad1")} onMouseEnter={() => setHovered("ad1")} onMouseLeave={() => setHovered(null)}>Dashboard</Link>
+              <Link to="/admin/users" style={getStyle("ad2")} onMouseEnter={() => setHovered("ad2")} onMouseLeave={() => setHovered(null)}>Users</Link>
+              <Link to="/admin/departments" style={getStyle("ad3")} onMouseEnter={() => setHovered("ad3")} onMouseLeave={() => setHovered(null)}>Departments</Link>
+              <Link to="/admin/sla" style={getStyle("ad4")} onMouseEnter={() => setHovered("ad4")} onMouseLeave={() => setHovered(null)}>SLA</Link>
+              <Link to="/admin/logs" style={getStyle("ad5")} onMouseEnter={() => setHovered("ad5")} onMouseLeave={() => setHovered(null)}>Logs</Link>
+            </div>
+          )}
+        </div>
+
+        {/* MANAGER */}
+        <div>
+          <div style={styles.menu} onClick={() => setOpen(open === "manager" ? null : "manager")}>
+            📊 Manager
+          </div>
+
+          {open === "manager" && (
+            <div style={styles.dropdown}>
+              <Link to="/manager" style={getStyle("m1")} onMouseEnter={() => setHovered("m1")} onMouseLeave={() => setHovered(null)}>Dashboard</Link>
+              <Link to="/manager/escalation" style={getStyle("m2")} onMouseEnter={() => setHovered("m2")} onMouseLeave={() => setHovered(null)}>Escalation</Link>
+              <Link to="/manager/team" style={getStyle("m3")} onMouseEnter={() => setHovered("m3")} onMouseLeave={() => setHovered(null)}>Team</Link>
+              <Link to="/manager/tickets" style={getStyle("m4")} onMouseEnter={() => setHovered("m4")} onMouseLeave={() => setHovered(null)}>Tickets</Link>
+            </div>
+          )}
+        </div>
+
+        {/* SUPER ADMIN */}
+        <div>
+          <div style={styles.menu} onClick={() => setOpen(open === "superadmin" ? null : "superadmin")}>
+            👑 Super Admin
+          </div>
+
+          {open === "superadmin" && (
+            <div style={styles.dropdown}>
+              <Link to="/superadmin" style={getStyle("s1")} onMouseEnter={() => setHovered("s1")} onMouseLeave={() => setHovered(null)}>Dashboard</Link>
+              <Link to="/superadmin/admins" style={getStyle("s2")} onMouseEnter={() => setHovered("s2")} onMouseLeave={() => setHovered(null)}>Admin Mgmt</Link>
+              <Link to="/superadmin/departments" style={getStyle("s3")} onMouseEnter={() => setHovered("s3")} onMouseLeave={() => setHovered(null)}>Departments</Link>
+              <Link to="/superadmin/users" style={getStyle("s4")} onMouseEnter={() => setHovered("s4")} onMouseLeave={() => setHovered(null)}>Users</Link>
+              <Link to="/superadmin/system" style={getStyle("s5")} onMouseEnter={() => setHovered("s5")} onMouseLeave={() => setHovered(null)}>System</Link>
+              <Link to="/superadmin/logs" style={getStyle("s6")} onMouseEnter={() => setHovered("s6")} onMouseLeave={() => setHovered(null)}>Logs</Link>
+              <Link to="/superadmin/notifications" style={getStyle("s7")} onMouseEnter={() => setHovered("s7")} onMouseLeave={() => setHovered(null)}>Notifications</Link>
+            </div>
+          )}
+        </div>
+
       </div>
+
+      <div style={styles.content}>
+        <Outlet />
+      </div>
+
     </div>
-  );
-}
-
-/* ================= USER ================= */
-function UserLayout() {
-  return (
-    <>
-      <div style={styles.subnav}>
-        <Link to="/user" style={styles.subLink}>📊 Dashboard</Link>
-        <Link to="/user/tickets" style={styles.subLink}>🎫 Tickets</Link>
-        <Link to="/user/new" style={styles.subLink}>➕ New</Link>
-        <Link to="/user/kb" style={styles.subLink}>📚 KB</Link>
-        <Link to="/user/notifications" style={styles.subLink}>🔔 Notifications</Link>
-      </div>
-      <Outlet />
-    </>
-  );
-}
-
-/* ================= AGENT ================= */
-function AgentLayout() {
-  return (
-    <>
-      <div style={styles.subnav}>
-        <Link to="/agent" style={styles.subLink}>📊 Dashboard</Link>
-        <Link to="/agent/queue" style={styles.subLink}>📥 Queue</Link>
-        <Link to="/agent/tickets" style={styles.subLink}>🎫 My Tickets</Link>
-        <Link to="/agent/sla" style={styles.subLink}>⏱️ SLA</Link>
-      </div>
-      <Outlet />
-    </>
-  );
-}
-
-/* ================= ADMIN ================= */
-function AdminLayout() {
-  return (
-    <>
-      <div style={styles.subnav}>
-        <Link to="/admin" style={styles.subLink}>📊 Dashboard</Link>
-        <Link to="/admin/users" style={styles.subLink}>👥 Users</Link>
-        <Link to="/admin/departments" style={styles.subLink}>🏢 Departments</Link>
-        <Link to="/admin/sla" style={styles.subLink}>⏱️ SLA</Link>
-        <Link to="/admin/logs" style={styles.subLink}>📜 Logs</Link>
-      </div>
-      <Outlet />
-    </>
-  );
-}
-
-/* ================= MANAGER ================= */
-function ManagerLayout() {
-  return (
-    <>
-      <div style={styles.subnav}>
-        <Link to="/manager" style={styles.subLink}>📊 Dashboard</Link>
-        <Link to="/manager/escalation" style={styles.subLink}>⚠️ Escalation</Link>
-        <Link to="/manager/team" style={styles.subLink}>👥 Team</Link>
-        <Link to="/manager/tickets" style={styles.subLink}>🎫 Tickets</Link>
-      </div>
-      <Outlet />
-    </>
-  );
-}
-
-/* ================= SUPER ADMIN LAYOUT (ADDED) ================= */
-function SuperAdminLayout() {
-  return (
-    <>
-      <div style={styles.subnav}>
-        <Link to="/superadmin" style={styles.subLink}>📊 Dashboard</Link>
-        <Link to="/superadmin/admins" style={styles.subLink}>🛠️ Admin Mgmt</Link>
-        <Link to="/superadmin/departments" style={styles.subLink}>🏢 Departments</Link>
-        <Link to="/superadmin/users" style={styles.subLink}>👥 Users</Link>
-        <Link to="/superadmin/system" style={styles.subLink}>⚙️ System</Link>
-        <Link to="/superadmin/logs" style={styles.subLink}>📜 Logs</Link>
-        <Link to="/superadmin/notifications" style={styles.subLink}>🔔 Notifications</Link>
-      </div>
-      <Outlet />
-    </>
   );
 }
 
 /* ================= APP ================= */
 export default function App() {
-  const [users, setUsers] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [auditLogs, setAuditLogs] = useState([]);
-  const [globalSearch, setGlobalSearch] = useState("");
-
-  const addLog = (action, target, module) => {
-    setAuditLogs((prev) => [
-      {
-        id: Date.now(),
-        action,
-        target,
-        module,
-        user: "Admin",
-        time: new Date().toLocaleString(),
-      },
-      ...prev,
-    ]);
-  };
-
   return (
     <BrowserRouter>
       <Routes>
 
         <Route path="/" element={<HomePage />} />
-
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        <Route element={<Layout globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />}>
+        <Route element={<Layout />}>
 
-          {/* USER */}
-          <Route path="user" element={<UserLayout />}>
-            <Route index element={<Dashboard globalSearch={globalSearch} />} />
-            <Route path="tickets" element={<MyTickets globalSearch={globalSearch} />} />
+          <Route path="user">
+            <Route index element={<Dashboard />} />
+            <Route path="tickets" element={<MyTickets />} />
             <Route path="new" element={<NewTicket />} />
             <Route path="kb" element={<KnowledgeBase />} />
             <Route path="notifications" element={<Notifications />} />
           </Route>
 
-          {/* AGENT */}
-          <Route path="agent" element={<AgentLayout />}>
+          <Route path="agent">
             <Route index element={<AgentDashboard />} />
             <Route path="queue" element={<TicketQueue />} />
             <Route path="tickets" element={<AgentMyTickets />} />
             <Route path="sla" element={<SlaNotification />} />
           </Route>
 
-          {/* ADMIN */}
-          <Route path="admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard users={users} departments={departments} auditLogs={auditLogs} />} />
-            <Route path="users" element={<Users users={users} setUsers={setUsers} addLog={addLog} />} />
-            <Route path="departments" element={<Departments departments={departments} setDepartments={setDepartments} addLog={addLog} />} />
-            <Route path="sla" element={<SLASettings addLog={addLog} />} />
-            <Route path="logs" element={<AuditLogs auditLogs={auditLogs} />} />
+          <Route path="admin">
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<Users />} />
+            <Route path="departments" element={<Departments />} />
+            <Route path="sla" element={<SLASettings />} />
+            <Route path="logs" element={<AuditLogs />} />
             <Route path="notifications" element={<AdminNotification />} />
           </Route>
 
-          {/* MANAGER */}
-          <Route path="manager" element={<ManagerLayout />}>
+          <Route path="manager">
             <Route index element={<ManagerDashboard />} />
             <Route path="escalation" element={<Escalation />} />
             <Route path="team" element={<TeamWorkLoad />} />
@@ -230,34 +204,14 @@ export default function App() {
             <Route path="notifications" element={<ManagerNotification />} />
           </Route>
 
-          {/* ✅ SUPER ADMIN (FULL FIX) */}
-          <Route path="superadmin" element={<SuperAdminLayout />}>
-
-            {/* Dashboard */}
-            <Route
-              index
-              element={
-                <SuperAdminDashboard
-                  users={users}
-                  departments={departments}
-                  auditLogs={auditLogs}
-                />
-              }
-            />
-
-            {/* Other Pages */}
+          <Route path="superadmin">
+            <Route index element={<SuperAdminDashboard />} />
             <Route path="admins" element={<AdminManagement />} />
             <Route path="departments" element={<DepartmentManagement />} />
             <Route path="users" element={<UserOverview />} />
             <Route path="system" element={<SystemControl />} />
             <Route path="logs" element={<SuperAuditLogs />} />
             <Route path="notifications" element={<SuperNotifications />} />
-
-
-
-            {/* ✅ SAFETY (IMPORTANT) */}
-            <Route path="*" element={<div>Page Not Found</div>} />
-
           </Route>
 
         </Route>
@@ -267,49 +221,70 @@ export default function App() {
   );
 }
 
-/* ================= STYLES ================= */
+/* ================= STYLE (ONLY SUBMENU UPGRADED) ================= */
 const styles = {
-  app: { display: "flex", height: "100vh", background: "#f8fafc" },
+  app: { display: "flex", height: "100vh" },
+
   sidebar: {
-    width: "240px",
-    background: "linear-gradient(180deg, #020617, #0f172a)",
+    width: "250px",
+    background: "#0f172a",
     color: "white",
-    padding: "20px",
+    padding: "auto",
     display: "flex",
     flexDirection: "column",
-    gap: "12px",
-    boxShadow: "2px 0 10px rgba(0,0,0,0.3)"
+    gap: "10px"
   },
-  logo: { marginBottom: "20px", fontSize: "20px", letterSpacing: "1px" },
+
+  logo: { marginBottom: "10px" },
+
   link: {
-    color: "#cbd5e1",
-    padding: "10px",
-    borderRadius: "8px",
+    color: "white",
     textDecoration: "none",
-    transition: "0.3s",
+    padding: "6px"
   },
-  content: { flex: 1, padding: "25px", overflow: "auto" },
-  subnav: { display: "flex", gap: "10px", marginBottom: "20px" },
-  subLink: {
-    padding: "7px 12px",
-    background: "#e2e8f0",
-    borderRadius: "8px",
-    fontSize: "13px",
-    textDecoration: "none"
+
+  menu: {
+    padding: "10px",
+    background: "#1e293b",
+    marginTop: "10px",
+    cursor: "pointer",
+    borderRadius: "6px"
   },
-  topBar: {
-    height: "60px",
+
+  dropdown: {
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottom: "1px solid #e2e8f0",
-    background: "#f8fafc",
-  },
-  searchInput: {
-    width: "50%",
-    padding: "10px 15px",
+    flexDirection: "column",
+    padding: "8px 0 8px 12px",
+    marginTop: "6px",
+    borderLeft: "2px solid rgba(56,189,248,0.35)",
+    background: "rgba(255,255,255,0.03)",
     borderRadius: "10px",
-    border: "1px solid #cbd5e1",
-    outline: "none",
+    backdropFilter: "blur(6px)"
   },
+
+  subLink: {
+    padding: "9px 12px",
+    borderRadius: "10px",
+    fontSize: "13.5px",
+    textDecoration: "none",
+    color: "#cbd5e1",
+    background: "transparent",
+    transition: "all 0.25s ease",
+    display: "block",
+    letterSpacing: "0.4px",
+    fontWeight: "500",
+  },
+
+  subLinkHover: {
+    background: "rgba(56,189,248,0.15)",
+    color: "#38bdf8",
+    transform: "translateX(8px)",
+    boxShadow: "0 0 18px rgba(56,189,248,0.45)",
+    borderRadius: "12px",
+    transition: "all 0.2s ease",
+  },
+  content: {
+    flex: 1,
+    padding: 20
+  }
 };

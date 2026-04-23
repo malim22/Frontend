@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDashboardData } from "../../api"; // ✅ SAME API LIKE ESCALATIONS
-
+import { getTeamWorkload } from "../../api";
 export default function TeamWorkload() {
 
   const [queue, setQueue] = useState([
@@ -12,16 +11,16 @@ export default function TeamWorkload() {
 
   // ✅ API CALL (SAFE)
   useEffect(() => {
-    getDashboardData()
+    getTeamWorkload()
       .then((res) => {
         setApiData(res);
 
-        // OPTIONAL SAFE UPDATE (only if backend sends queue)
+        // ✅ real backend mapping
         if (res?.queue) {
           setQueue(res.queue);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleAssign = (id) => {

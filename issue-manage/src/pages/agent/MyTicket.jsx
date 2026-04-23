@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 // ✅ ADD THIS IMPORT
-import { getTicketQueue } from "../../api";
-
+import { getMyTickets } from "../../api";
 const MyTickets = () => {
   const location = useLocation();
 
@@ -70,19 +69,38 @@ const MyTickets = () => {
 
   // ✅ 🔥 API FETCH (ONLY ADDITION)
   useEffect(() => {
-    const loadTickets = async () => {
-      try {
-        const data = await getTicketQueue();
-        if (data) {
-          setTickets(data);
-        }
-      } catch (err) {
-        console.log("API error:", err);
-      }
-    };
+  const loadTickets = async () => {
+    try {
+      const res = await getMyTickets();
+      const data = res?.data || res;
 
-    loadTickets();
-  }, []);
+      if (Array.isArray(data)) {
+        setTickets(
+          data.map((t) => ({
+            id: t.id || t.ticketId,
+            title: t.title,
+            desc: t.description,
+            priority:
+              t.priority === "P1"
+                ? "Critical"
+                : t.priority === "P2"
+                ? "High"
+                : t.priority === "P3"
+                ? "Medium"
+                : "Low",
+            status: t.status,
+            user: t.userName,
+            created: new Date(t.createdAt).toLocaleString(),
+          }))
+        );
+      }
+    } catch (err) {
+      console.log("API error:", err);
+    }
+  };
+
+  loadTickets();
+}, []);
 
   /* ===== FILTER LOGIC ===== */
   const filtered = tickets.filter(t => {
