@@ -73,21 +73,156 @@ const DepartmentManagement = ({ depts = [], setDepts}) => {
   return (
     <div className="content-area">
       <style>{`
-        .content-area { padding:20px; background:#f8fafc; min-height:100vh; font-family:Arial; }
-        .card { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.05);}
-        input, textarea { width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;}
-        button { cursor:pointer; border:none; border-radius:6px; padding:8px 12px; }
-        .primary { background:#2563eb; color:#fff; }
-        .grid { display:grid; gap:20px; margin-top:20px; }
-        .modal-overlay {
-          position:fixed;
-          top:0; left:0; right:0; bottom:0;
-          background:rgba(0,0,0,0.5);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
-      `}</style>
+  .content-area {
+    padding: 28px;
+    background: #f4f7fb;
+    min-height: 100vh;
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  /* ---------- GRID ---------- */
+  .grid {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  /* ---------- CARDS ---------- */
+  .card {
+    background: #ffffff;
+    padding: 20px 22px;
+    border-radius: 16px;
+    border: 1px solid #eaeef4;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.08);
+  }
+
+  .card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .card p {
+    font-size: 14px;
+    color: #475569;
+    margin: 2px 0;
+  }
+
+  /* ---------- SEARCH ---------- */
+  input, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 14px;
+    transition: 0.2s ease;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+  }
+
+  textarea {
+    resize: none;
+    min-height: 80px;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 6px;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+  }
+
+  .primary {
+    background: #2563eb;
+    color: #fff;
+  }
+
+  .primary:hover {
+    background: #1d4ed8;
+  }
+
+  /* ---------- STATUS STYLE ---------- */
+  .card p:nth-child(3) {
+    font-weight: 500;
+  }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .modal-overlay .card {
+    width: 380px;
+    animation: slideUp 0.25s ease;
+  }
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+  }
+
+  /* ---------- ADD BUTTON ---------- */
+  .content-area > button.primary {
+    margin-top: 20px;
+    padding: 10px 16px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+    .grid:first-of-type {
+  margin-bottom: 25px;
+}
+`}</style>
 
       <h2>Department Management</h2>
 

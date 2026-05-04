@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"; // ✅ added useEffect ONLY
+import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { getDashboardData, createTicket } from "../../api"; // ✅ ONLY ADDED
+import { getDashboardData} from "../../api";
 
 const DashboardHome = ({ addLog }) => {
   const [tickets, setTickets] = useState([]);
@@ -16,7 +16,6 @@ const DashboardHome = ({ addLog }) => {
 
   const [search, setSearch] = useState("");
 
-  /* ================= ONLY ADDITION (SAFE API LOAD) ================= */
   useEffect(() => {
     const load = async () => {
       try {
@@ -24,49 +23,14 @@ const DashboardHome = ({ addLog }) => {
         if (data && Array.isArray(data.tickets)) {
           setTickets(data.tickets);
         }
-      } catch  {
-        // ✅ NO ERROR BREAK
+      } catch {
+        // NO ERROR BREAK
       }
     };
     load();
   }, []);
 
-  /* ---------------- ADD TICKET ---------------- */
-  const addTicket = async () => {
-    if (!form.title || !form.customer || !form.module) return;
-
-    let newTicket = {
-      id: "TKT-" + Math.floor(Math.random() * 9000),
-      title: form.title,
-      customer: form.customer,
-      module: form.module,
-      priority: form.priority,
-      created: new Date().toLocaleString()
-    };
-
-    try {
-      const res = await createTicket(form);
-      if (res) newTicket = res; // ✅ backend override if exists
-    } catch  {
-      // ✅ fallback works
-    }
-
-    setTickets((prev) => [newTicket, ...prev]);
-
-    addLog?.("TICKET_CREATED", newTicket.id, "Agent Dashboard");
-
-    setForm({
-      title: "",
-      customer: "",
-      module: "",
-      priority: "Low",
-      slaHours: ""
-    });
-
-    navigate("/agent/tickets");
-  };
-
-  /* ---------------- RESOLVE ---------------- */
+  
   const resolveTicket = (ticket) => {
     setTickets((prev) =>
       prev.filter((t) => t.id !== ticket.id)
@@ -75,7 +39,6 @@ const DashboardHome = ({ addLog }) => {
     addLog?.("TICKET_RESOLVED", ticket.id, "Agent Dashboard");
   };
 
-  /* ---------------- PRIORITY COLOR ---------------- */
   const getColor = (p) => {
     switch (p) {
       case "Critical":
@@ -97,8 +60,27 @@ const DashboardHome = ({ addLog }) => {
     <div style={styles.page}>
 
       <div style={styles.header}>
-        <h2>Agent Dashboard</h2>
-        <p style={{ color: "#666" }}>Manage tickets efficiently</p>
+        <div>
+          <h2>Agent Dashboard</h2>
+          <p style={{ color: "#666" }}>Manage tickets efficiently</p>
+        </div>
+
+        {/* RIGHT SIDE BUTTONS */}
+        <div style={styles.headerBtns}>
+          <button
+            style={styles.smallPickBtn}
+            onClick={() => navigate("/agent/queue")}
+          >
+            Pick
+          </button>
+
+          <button
+            style={styles.smallViewBtn}
+            onClick={() => navigate("/agent/tickets")}
+          >
+            View
+          </button>
+        </div>
       </div>
 
       <input
@@ -115,9 +97,7 @@ const DashboardHome = ({ addLog }) => {
         <div style={styles.card}>Resolved<br /><b>0</b></div>
       </div>
 
-      {/* FORM */}
       <div style={styles.form}>
-
         <input
           placeholder="Title"
           value={form.title}
@@ -150,17 +130,9 @@ const DashboardHome = ({ addLog }) => {
           <option>Low</option>
         </select>
 
-        <button
-          type="button"
-          style={styles.btn}
-          onClick={addTicket}
-        >
-          Add Ticket
-        </button>
-
+        
       </div>
 
-      {/* LIST */}
       <div style={styles.list}>
         {filtered.length === 0 ? (
           <div style={styles.empty}>No tickets found</div>
@@ -184,19 +156,33 @@ const DashboardHome = ({ addLog }) => {
               <h4 style={{ margin: "6px 0" }}>{t.title}</h4>
 
               <div style={styles.meta}>
-                {t.customer} • {t.module}
-              </div>
-
-              <div style={styles.meta}>
                 Created: {t.created}
               </div>
 
-              <button
-                style={styles.resolveBtn}
-                onClick={() => resolveTicket(t)}
-              >
-                Resolve
-              </button>
+              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                <button
+                  type="button"
+                  style={styles.pickMainBtn}
+                  onClick={() => navigate("/agent/queue")}
+                >
+                  Pick a Ticket
+                </button>
+
+                <button
+                  type="button"
+                  style={styles.viewMainBtn}
+                  onClick={() => navigate("/agent/tickets")}
+                >
+                  View aTicket
+                </button>
+
+                <button
+                  style={styles.resolveBtn}
+                  onClick={() => resolveTicket(t)}
+                >
+                  Resolve
+                </button>
+              </div>
 
             </div>
           ))
@@ -220,16 +206,19 @@ const styles = {
   header: { marginBottom: 10 },
   search: {
     width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 10,
     borderRadius: 10,
     border: "1px solid #ddd",
-    marginBottom: 15
+    marginBottom: 10
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
     gap: 10,
-    marginBottom: 15
+    marginBottom: 10
   },
   card: {
     background: "#fff",
@@ -273,5 +262,36 @@ const styles = {
     borderRadius: 8,
     cursor: "pointer"
   },
-  empty: { textAlign: "center", color: "#777" }
+  empty: { textAlign: "center", color: "#777" },
+
+  headerBtns: {
+    display: "flex",
+    gap: 8
+  },
+
+  smallPickBtn: {
+    background: "#2563eb",
+    color: "#fff",
+    border: "none",
+    padding: "8px 14px",
+    borderRadius: 8,
+    fontSize: 13,
+    fontWeight: 500,
+    cursor: "pointer",
+    boxShadow: "0 2px 6px rgba(37,99,235,0.3)",
+    transition: "0.2s"
+  },
+
+  smallViewBtn: {
+    background: "#9333ea",
+    color: "#fff",
+    border: "none",
+    padding: "8px 14px",
+    borderRadius: 8,
+    fontSize: 13,
+    fontWeight: 500,
+    cursor: "pointer",
+    boxShadow: "0 2px 6px rgba(147,51,234,0.3)",
+    transition: "0.2s"
+  }
 };

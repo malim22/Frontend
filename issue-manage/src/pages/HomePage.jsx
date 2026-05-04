@@ -40,12 +40,13 @@ export default function HomePage() {
             </div>
 
             {/* ✅ NEW LOGIN BUTTON (TOP RIGHT) */}
+            {/* ✅ NEW LOGIN BUTTON (TOP RIGHT) */}
             <div
                 onClick={() => navigate("/login")}
                 style={{
                     position: "fixed",
                     top: "10px",
-                    right: "60px",   // shifted left so it doesn't overlap bell
+                    right: "60px",
                     padding: "6px 14px",
                     background: "#2563eb",
                     color: "white",
@@ -137,7 +138,7 @@ export default function HomePage() {
                         if (isLoggedIn) {
                             navigate("/user");
                         } else {
-                            navigate("/login", { state: { redirect: "/user" } });
+                            navigate("/login", { state: { role: "USER" } });
                         }
                     }}
                 >
@@ -170,7 +171,7 @@ export default function HomePage() {
                     <p style={styles.text}>
                         Users can create tickets, track their status, and reopen issues if needed.
                     </p>
-                    <button style={styles.btn} onClick={() => navigate("/user")}>
+                    <button style={styles.btn} onClick={() => navigate("/login", { state: { role: "USER" } })}>
                         Go to User →
                     </button>
                 </div>
@@ -184,7 +185,7 @@ export default function HomePage() {
                     <p style={styles.text}>
                         Agents pick tickets and resolve efficiently based on SLA.
                     </p>
-                    <button style={styles.btn} onClick={() => navigate("/agent")}>
+                    <button style={styles.btn} onClick={() => navigate("/login", { state: { role: "AGENT" } })}>
                         Go to Agent →
                     </button>
                 </div>
@@ -198,7 +199,7 @@ export default function HomePage() {
                     <p style={styles.text}>
                         Managers monitor escalations and team performance.
                     </p>
-                    <button style={styles.btn} onClick={() => navigate("/manager")}>
+                    <button style={styles.btn} onClick={() => navigate("/login", { state: { role: "MANAGER" } })}>
                         Go to Manager →
                     </button>
                 </div>
@@ -212,7 +213,7 @@ export default function HomePage() {
                     <p style={styles.text}>
                         Admin controls full system and configurations.
                     </p>
-                    <button style={styles.btn} onClick={() => navigate("/admin")}>
+                    <button style={styles.btn} onClick={() => navigate("/login", { state: { role: "ADMIN" } })}>
                         Go to Admin →
                     </button>
                 </div>

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 const Notifications = ({
   notifications = [],   // ✅ FIX: default value
-  markAllAsRead = () => {},
-  deleteNotification = () => {},
-  markAsRead = () => {}
+  markAllAsRead = () => { },
+  deleteNotification = () => { },
+  markAsRead = () => { }
 }) => {
 
   const [expandedId, setExpandedId] = useState(null);
@@ -12,7 +12,7 @@ const Notifications = ({
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const getIcon = (type) => {
-    switch(type) {
+    switch (type) {
       case 'CRITICAL': return { icon: '🚨', bg: '#fee2e2', color: '#dc2626' };
       case 'SUCCESS': return { icon: '✅', bg: '#dcfce7', color: '#16a34a' };
       case 'WARNING': return { icon: '⚠️', bg: '#fef3c7', color: '#d97706' };
@@ -31,18 +31,96 @@ const Notifications = ({
 
       {/* ✅ ADDED GLOBAL STYLING */}
       <style>{`
-        .content-area {
-          padding: 20px;
-          background: #f8fafc;
-          min-height: 100vh;
-          font-family: Arial, sans-serif;
-        }
+  .content-area {
+    padding: 28px;
+    background: #f4f7fb;
+    min-height: 100vh;
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+  }
 
-        button:hover {
-          opacity: 0.9;
-        }
-      `}</style>
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
 
+  p {
+    font-size: 14px;
+  }
+
+  /* ---------- BUTTON ---------- */
+  button {
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+
+  /* ---------- MAIN CARD ---------- */
+  .content-area > div:nth-of-type(2) {
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* ---------- NOTIFICATION ROW ---------- */
+  .content-area > div:nth-of-type(2) > div {
+    transition: all 0.25s ease;
+  }
+
+  .content-area > div:nth-of-type(2) > div:hover {
+    background: #f1f5ff !important;
+    transform: translateX(4px);
+  }
+
+  /* ---------- ITEM INNER ---------- */
+  .content-area > div:nth-of-type(2) > div > div {
+    transition: all 0.2s ease;
+  }
+
+  /* ---------- ICON GLOW ---------- */
+  .content-area > div:nth-of-type(2) > div > div > div:first-child {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.25s ease;
+  }
+
+  .content-area > div:nth-of-type(2) > div:hover > div > div:first-child {
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+    transform: scale(1.05);
+  }
+
+  /* ---------- TEXT ---------- */
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  /* ---------- EXPAND AREA ---------- */
+  .content-area > div:nth-of-type(2) > div > div:last-child {
+    animation: slideDown 0.25s ease;
+  }
+
+  /* ---------- EMPTY STATE ---------- */
+  .content-area div[style*="text-align: center"] {
+    opacity: 0.8;
+  }
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`}</style>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
         <div>
           <h2 style={{ fontSize: '24px', margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>

@@ -40,33 +40,111 @@ const SystemControl = () => {
   return (
     <div className="content-area">
 
-      {/* ✅ GLOBAL STYLING */}
+      {/* ✅ IMPROVED STYLING */}
       <style>{`
         .content-area {
-          padding: 24px;
-          background: #f8fafc;
+          padding: 28px;
+          background: #f1f5f9;
           min-height: 100vh;
-          font-family: Arial, sans-serif;
+          font-family: 'Inter', sans-serif;
         }
 
         .card {
-          background: #fff;
-          border-radius: 12px;
-          border: 1px solid #e5e7eb;
-          padding: 24px;
+          background: #ffffff;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          padding: 22px;
           margin-bottom: 24px;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+          transition: all 0.3s ease;
+          position: relative;
         }
 
+        /* ✨ hover lift */
+        .card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+          font-size: 26px;
+          margin-bottom: 6px;
+          color: #0f172a;
+        }
+
+        h3 {
+          margin-bottom: 14px;
+          font-size: 18px;
+          color: #0f172a;
+        }
+
+        p {
+          color: #64748b;
+        }
+
+        /* INPUTS */
+        input {
+          width: 100%;
+          padding: 10px 12px;
+          border-radius: 10px;
+          border: 1px solid #cbd5e1;
+          outline: none;
+          transition: 0.25s;
+        }
+
+        input:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+
+        /* BUTTONS */
         button {
-          transition: 0.2s;
+          margin-right: 10px;
+          padding: 9px 14px;
+          border-radius: 10px;
+          border: none;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.25s ease;
         }
 
         button:hover {
-          opacity: 0.9;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 18px rgba(0,0,0,0.15);
         }
 
-        /* ✅ TOGGLE SWITCH FIX */
+        /* PRIMARY */
+        .primary-btn {
+          background: #2563eb;
+          color: white;
+          box-shadow: 0 6px 15px rgba(37,99,235,0.35);
+        }
+
+        /* DANGER BUTTONS */
+        .danger-btn {
+          background: #ef4444;
+          color: white;
+          box-shadow: 0 6px 15px rgba(239,68,68,0.35);
+        }
+
+        /* GRID */
+        .status-row {
+          display: flex;
+          gap: 30px;
+          margin-top: 14px;
+          flex-wrap: wrap;
+        }
+
+        .toggle-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 16px;
+          padding: 10px 0;
+          border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* TOGGLE SWITCH */
         .toggle-switch {
           position: relative;
           display: inline-block;
@@ -103,6 +181,7 @@ const SystemControl = () => {
 
         input:checked + .slider {
           background-color: #2563eb;
+          box-shadow: 0 0 10px rgba(37,99,235,0.6);
         }
 
         input:checked + .slider:before {
@@ -111,18 +190,16 @@ const SystemControl = () => {
 
       `}</style>
 
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '24px', margin: 0 }}>System Control Panel</h2>
-        <p style={{ margin: 0, color: '#64748b' }}>
-          Configure system-wide settings and monitor operations
-        </p>
+      <div style={{ marginBottom: '26px' }}>
+        <h2>System Control Panel</h2>
+        <p>Configure system-wide settings and monitor operations</p>
       </div>
 
       {/* STATUS */}
       <div className="card">
         <h3>⚙️ System Status</h3>
 
-        <div style={{ display: 'flex', gap: '20px', marginTop: '16px' }}>
+        <div className="status-row">
           <div>🗄️ Database: <b style={{ color: '#16a34a' }}>Operational</b></div>
           <div>⏻ Server: <b style={{ color: '#16a34a' }}>Running</b></div>
           <div>⏱️ Uptime: <b>47 days</b></div>
@@ -133,7 +210,7 @@ const SystemControl = () => {
       <div className="card">
         <h3>⚙️ System Settings</h3>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+        <div className="toggle-row">
           <span>Maintenance Mode</span>
           <label className="toggle-switch">
             <input type="checkbox" checked={maintenanceMode} onChange={(e) => handleToggle('maintenance', e.target.checked)} />
@@ -141,7 +218,7 @@ const SystemControl = () => {
           </label>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+        <div className="toggle-row">
           <span>Auto Backups</span>
           <label className="toggle-switch">
             <input type="checkbox" checked={autoBackups} onChange={(e) => handleToggle('backups', e.target.checked)} />
@@ -149,7 +226,7 @@ const SystemControl = () => {
           </label>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+        <div className="toggle-row">
           <span>Email Notifications</span>
           <label className="toggle-switch">
             <input type="checkbox" checked={emailNotifs} onChange={(e) => handleToggle('emails', e.target.checked)} />
@@ -171,7 +248,8 @@ const SystemControl = () => {
 
         <button
           onClick={handleSaveConfig}
-          style={{ marginTop: '16px', background: '#2563eb', color: '#fff', padding: '10px 20px', borderRadius: '8px', border: 'none' }}
+          className="primary-btn"
+          style={{ marginTop: '16px' }}
         >
           Save Configuration
         </button>
@@ -181,9 +259,9 @@ const SystemControl = () => {
       <div className="card">
         <h3>⚠️ Dangerous Actions</h3>
 
-        <button onClick={() => handleDangerousAction('cache')}>Clear Cache</button>
-        <button onClick={() => handleDangerousAction('backup')}>Force Backup</button>
-        <button onClick={() => handleDangerousAction('reset')}>Reset Sessions</button>
+        <button className="danger-btn" onClick={() => handleDangerousAction('cache')}>Clear Cache</button>
+        <button className="danger-btn" onClick={() => handleDangerousAction('backup')}>Force Backup</button>
+        <button className="danger-btn" onClick={() => handleDangerousAction('reset')}>Reset Sessions</button>
       </div>
 
     </div>

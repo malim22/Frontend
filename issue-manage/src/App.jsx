@@ -182,6 +182,8 @@ export default function App() {
 
           <Route path="agent">
             <Route index element={<AgentDashboard />} />
+            <Route path="ticket-queue" element={<TicketQueue />} />
+            <Route path="my-tickets" element={<AgentMyTickets />} />
             <Route path="queue" element={<TicketQueue />} />
             <Route path="tickets" element={<AgentMyTickets />} />
             <Route path="sla" element={<SlaNotification />} />
